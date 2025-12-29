@@ -38,7 +38,7 @@ app.register_blueprint(user_bp, url_prefix='/api')
 app.register_blueprint(forms_bp, url_prefix='/api')
 app.register_blueprint(admin_bp)
 
-# --- DATABASE CONFIGURATION (UPDATED FOR SUPABASE) ---
+# --- DATABASE CONFIGURATION ---
 database_url = os.environ.get('DATABASE_URL')
 
 # SQLAlchemy requires 'postgresql://' instead of 'postgres://'
@@ -148,4 +148,22 @@ def init_database():
 # Call initialization
 init_database()
 
-@
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    static_folder_path = app.static_folder
+    if not static_folder_path:
+        return "Static folder not configured", 404
+
+    if path != "" and os.path.exists(os.path.join(static_folder_path, path)):
+        return send_from_directory(static_folder_path, path)
+    else:
+        index_path = os.path.join(static_folder_path, 'index.html')
+        if os.path.exists(index_path):
+            return send_from_directory(static_folder_path, 'index.html')
+        else:
+            return "index.html not found", 404
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5002))
+    app.run(host='0.0.0.0', port=port, debug=False)
