@@ -10,7 +10,7 @@ import logoImage from './assets/images/techbucketlogoblack.png';
 import heroBackground from './assets/images/hero_background.jpg';
 
 // API Configuration
-const API_BASE_URL = 'http://localhost:5002/api';
+const API_BASE_URL = 'https://techbucket-api.onrender.com/api';
 
 function App() {
   return (
