@@ -17,10 +17,11 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
-app.config['SECRET_KEY'] = 'techbucket-secret-key-2025'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'techbucket-secret-key-2025')
 
-# Enable CORS for all routes with credentials support
-CORS(app, origins="*", supports_credentials=True)
+# Enable CORS - Modified for Production
+# Using "*" allows your frontend to talk to it immediately. 
+CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
 # Email Configuration (Zoho Mail)
 app.config['MAIL_SERVER'] = 'smtp.zoho.com'
@@ -34,11 +35,14 @@ app.register_blueprint(user_bp, url_prefix='/api')
 app.register_blueprint(forms_bp, url_prefix='/api')
 app.register_blueprint(admin_bp)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
+# FIXED: Database Path for Render
+basedir = os.path.abspath(os.path.dirname(__file__))
+db_path = os.path.join(basedir, 'database', 'app.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Ensure database directory exists
-os.makedirs(os.path.join(os.path.dirname(__file__), 'database'), exist_ok=True)
+os.makedirs(os.path.join(basedir, 'database'), exist_ok=True)
 
 # Initialize database with app
 db.init_app(app)
@@ -65,11 +69,6 @@ def send_email(to_emails, subject, body):
         return True
     except Exception as e:
         print(f"EMAIL SENDING FAILED: {str(e)}")
-        print(f"EMAIL NOTIFICATION:")
-        print(f"To: {to_emails}")
-        print(f"Subject: {subject}")
-        print(f"Body: {body}")
-        print("-" * 50)
         return False
 
 # Make send_email available globally
@@ -189,12 +188,15 @@ def init_database():
             db.session.rollback()
             print(f"Error initializing database: {e}")
 
+# This ensures database is initialized when running via Gunicorn
+init_database()
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
     static_folder_path = app.static_folder
     if static_folder_path is None:
-            return "Static folder not configured", 404
+        return "Static folder not configured", 404
 
     if path != "" and os.path.exists(os.path.join(static_folder_path, path)):
         return send_from_directory(static_folder_path, path)
@@ -206,8 +208,5 @@ def serve(path):
             return "index.html not found", 404
 
 if __name__ == '__main__':
-    init_database()
-    import os
     port = int(os.environ.get('PORT', 5002))
-    app.run(host='0.0.0.0', port=port, debug=True)
-
+    app.run(host='0.0.0.0', port=port, debug=False)
