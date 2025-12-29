@@ -1,26 +1,28 @@
 import os
 import sys
+import hashlib
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
 # DON'T CHANGE THIS !!!
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask import Flask, send_from_directory
 from flask_cors import CORS
+
+# Import Database and Models
 from src.models.user import db
 from src.models.admin import Brand, Category, Product, Service, Event, Admin
 from src.models.forms import QuoteRequest, SupportCase, Inquiry, EventRegistration
 from src.routes.user import user_bp
 from src.routes.forms import forms_bp
 from src.routes.admin import admin_bp
-import hashlib
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'techbucket-secret-key-2025')
 
-# Enable CORS - Modified for Production
-# Using "*" allows your frontend to talk to it immediately. 
+# Enable CORS for Production
 CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
 # Email Configuration (Zoho Mail)
@@ -31,18 +33,24 @@ app.config['MAIL_USERNAME'] = 'admin@techbucket.com.np'
 app.config['MAIL_PASSWORD'] = 'Uzumaki@123'
 app.config['MAIL_DEFAULT_SENDER'] = 'admin@techbucket.com.np'
 
+# Register Blueprints
 app.register_blueprint(user_bp, url_prefix='/api')
 app.register_blueprint(forms_bp, url_prefix='/api')
 app.register_blueprint(admin_bp)
 
-# FIXED: Database Path for Render
-basedir = os.path.abspath(os.path.dirname(__file__))
-db_path = os.path.join(basedir, 'database', 'app.db')
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
+# --- DATABASE CONFIGURATION (UPDATED FOR SUPABASE) ---
+database_url = os.environ.get('DATABASE_URL')
+
+# SQLAlchemy requires 'postgresql://' instead of 'postgres://'
+if database_url and database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+# Use Supabase if available, otherwise fallback to local SQLite
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url or f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Ensure database directory exists
-os.makedirs(os.path.join(basedir, 'database'), exist_ok=True)
+# Ensure database directory exists (for local fallback only)
+os.makedirs(os.path.join(os.path.dirname(__file__), 'database'), exist_ok=True)
 
 # Initialize database with app
 db.init_app(app)
@@ -71,12 +79,12 @@ def send_email(to_emails, subject, body):
         print(f"EMAIL SENDING FAILED: {str(e)}")
         return False
 
-# Make send_email available globally
 app.send_email = send_email
 
 # Initialize database and create default data
 def init_database():
     with app.app_context():
+        # Tables are created based on the imports at the top of the file
         db.create_all()
         
         # Create default admin if not exists
@@ -97,8 +105,7 @@ def init_database():
                 Brand(name='Dell', description='Enterprise server and computing solutions'),
                 Brand(name='HP', description='Hewlett Packard Enterprise solutions')
             ]
-            for brand in brands:
-                db.session.add(brand)
+            db.session.add_all(brands)
         
         # Create default categories if not exist
         if Category.query.count() == 0:
@@ -107,8 +114,7 @@ def init_database():
                 Category(name='Servers', description='Server hardware and solutions'),
                 Category(name='Wireless', description='Wireless networking solutions')
             ]
-            for category in categories:
-                db.session.add(category)
+            db.session.add_all(categories)
         
         # Create default services if not exist
         if Service.query.count() == 0:
@@ -128,58 +134,9 @@ def init_database():
                     benefits=['Expert deployment', 'Minimal downtime', 'Quality assurance'],
                     process=['Site preparation', 'Equipment installation', 'Configuration and testing'],
                     icon='implementation'
-                ),
-                Service(
-                    title='Wireless Deployment',
-                    description='Wireless network design and implementation',
-                    features=['Site survey', 'Access point placement', 'Security configuration'],
-                    benefits=['Seamless connectivity', 'Optimal coverage', 'Secure wireless'],
-                    process=['Site assessment', 'Design planning', 'Deployment and testing'],
-                    icon='wireless'
-                ),
-                Service(
-                    title='Server and System Administration',
-                    description='Complete server management and administration',
-                    features=['Server setup', 'Performance monitoring', 'Security management'],
-                    benefits=['Reliable performance', '24/7 monitoring', 'Proactive maintenance'],
-                    process=['Server deployment', 'Configuration', 'Ongoing management'],
-                    icon='server'
-                ),
-                Service(
-                    title='Annual Maintenance Contract',
-                    description='Comprehensive annual maintenance and support',
-                    features=['Regular maintenance', 'Priority support', 'Hardware replacement'],
-                    benefits=['Reduced downtime', 'Cost predictability', 'Expert support'],
-                    process=['Contract setup', 'Regular checkups', 'Issue resolution'],
-                    icon='maintenance'
-                ),
-                Service(
-                    title='Service Maintenance Contract',
-                    description='Dedicated service support contracts',
-                    features=['Service level agreements', 'Response time guarantees', 'Escalation procedures'],
-                    benefits=['Guaranteed response', 'Service quality', 'Business continuity'],
-                    process=['SLA definition', 'Service delivery', 'Performance monitoring'],
-                    icon='service'
-                ),
-                Service(
-                    title='Backup and Monitoring',
-                    description='24/7 backup solutions and system monitoring',
-                    features=['Automated backups', 'Real-time monitoring', 'Alert systems'],
-                    benefits=['Data protection', 'System visibility', 'Proactive alerts'],
-                    process=['Backup setup', 'Monitoring configuration', 'Alert management'],
-                    icon='backup'
-                ),
-                Service(
-                    title='IT Infrastructure Audit',
-                    description='Comprehensive infrastructure assessment and audit',
-                    features=['Security assessment', 'Performance analysis', 'Compliance review'],
-                    benefits=['Risk identification', 'Performance optimization', 'Compliance assurance'],
-                    process=['Infrastructure review', 'Analysis and reporting', 'Recommendations'],
-                    icon='audit'
                 )
             ]
-            for service in services:
-                db.session.add(service)
+            db.session.add_all(services)
         
         try:
             db.session.commit()
@@ -188,25 +145,7 @@ def init_database():
             db.session.rollback()
             print(f"Error initializing database: {e}")
 
-# This ensures database is initialized when running via Gunicorn
+# Call initialization
 init_database()
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
-    static_folder_path = app.static_folder
-    if static_folder_path is None:
-        return "Static folder not configured", 404
-
-    if path != "" and os.path.exists(os.path.join(static_folder_path, path)):
-        return send_from_directory(static_folder_path, path)
-    else:
-        index_path = os.path.join(static_folder_path, 'index.html')
-        if os.path.exists(index_path):
-            return send_from_directory(static_folder_path, 'index.html')
-        else:
-            return "index.html not found", 404
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5002))
-    app.run(host='0.0.0.0', port=port, debug=False)
+@
