@@ -675,9 +675,19 @@ function ProductCard({ product }) {
   return (
     <>
       <Card className="hover-lift h-full flex flex-col">
-        <div className="aspect-video bg-muted rounded-t-lg flex items-center justify-center">
-          <div className="text-muted-foreground text-sm">Product Image</div>
+        {/* UPDATED IMAGE SECTION START */}
+        <div className="aspect-video bg-muted rounded-t-lg flex items-center justify-center overflow-hidden">
+          <img 
+            src={product.image} 
+            alt={product.name} 
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.target.src = logoImage; 
+            }}
+          />
         </div>
+        {/* UPDATED IMAGE SECTION END */}
+        
         <CardHeader className="flex-grow">
           <div className="flex justify-between items-start mb-2">
             <span className="text-sm font-medium text-primary bg-primary/10 px-2 py-1 rounded">
