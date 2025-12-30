@@ -246,66 +246,66 @@ function ServicesSection() {
 // Featured Products Section Component
 function FeaturedProductsSection() {
   const products = [
-    {
-      id: 1,
-      name: "Cisco Catalyst 9300 Series",
-      category: "Cisco",
-      type: "Networking",
-      description: "Enterprise-class stackable access switches with advanced security and management features.",
-      specifications: ["48 x 1G ports", "4 x 10G uplinks", "StackWise-480 technology", "DNA ready"],
-      image: "/assets/images/networking.jpg", 
-      price: "Contact for pricing"
-    },
-    {
-      id: 2,
-      name: "Dell PowerEdge R750",
-      category: "Dell",
-      type: "Servers",
-      description: "2U rack server designed for demanding workloads with exceptional performance.",
-      specifications: ["Intel Xeon Scalable processors", "Up to 4TB memory", "NVMe SSD support", "iDRAC9 management"],
-      image: "/assets/images/security.jpg", 
-      price: "Contact for pricing"
-    },
-    {
-      id: 3,
-      name: "HP ProLiant DL380 Gen10",
-      category: "HP",
-      type: "Servers",
-      description: "Industry-standard 2U rack server for diverse workloads and environments.",
-      specifications: ["Intel Xeon processors", "Up to 3TB memory", "12Gb/s SAS", "iLO5 management"],
-      image: "/assets/images/hero_background.jpg", 
-      price: "Contact for pricing"
-    },
-    {
-      id: 4,
-      name: "Cisco Meraki MR46",
-      category: "Cisco",
-      type: "Wireless",
-      description: "Wi-Fi 6 cloud-managed access point for high-density environments.",
-      specifications: ["Wi-Fi 6 (802.11ax)", "4x4:4 MU-MIMO", "Cloud management", "Advanced security"],
-      image: "/assets/images/networking.jpg", 
-      price: "Contact for pricing"
-    },
-    {
-      id: 5,
-      name: "Dell Networking N3248TE-ON",
-      category: "Dell",
-      type: "Networking",
-      description: "48-port 1GbE Top of Rack switch with 10GbE uplinks.",
-      specifications: ["48 x 1GbE ports", "4 x 10GbE SFP+", "Open Networking", "ONIE support"],
-      image: "/assets/images/security.jpg", 
-      price: "Contact for pricing"
-    },
-    {
-      id: 6,
-      name: "HP Aruba 6300M Series",
-      category: "HP",
-      type: "Networking",
-      description: "Modular campus core and aggregation switch with advanced features.",
-      specifications: ["Modular design", "Up to 576 ports", "VSF stacking", "AOS-CX operating system"],
-      image: "/assets/images/hero_background.jpg", 
-      price: "Contact for pricing"
-    }
+   {
+    id: 1,
+    name: "Cisco Catalyst 9300 Series",
+    category: "Cisco",
+    type: "Networking",
+    description: "Enterprise-class stackable access switches with advanced security and management features.",
+    specifications: ["48 x 1G ports", "4 x 10G uplinks", "StackWise-480 technology", "DNA ready"],
+    image: "/images/networking.jpg", 
+    price: "Contact for pricing"
+  },
+  {
+    id: 2,
+    name: "Dell PowerEdge R750",
+    category: "Dell",
+    type: "Servers",
+    description: "2U rack server designed for demanding workloads with exceptional performance.",
+    specifications: ["Intel Xeon Scalable processors", "Up to 4TB memory", "NVMe SSD support", "iDRAC9 management"],
+    image: "/images/security.jpg", 
+    price: "Contact for pricing"
+  },
+  {
+    id: 3,
+    name: "HP ProLiant DL380 Gen10",
+    category: "HP",
+    type: "Servers",
+    description: "Industry-standard 2U rack server for diverse workloads and environments.",
+    specifications: ["Intel Xeon processors", "Up to 3TB memory", "12Gb/s SAS", "iLO5 management"],
+    image: "/images/hero_background.jpg", 
+    price: "Contact for pricing"
+  },
+  {
+    id: 4,
+    name: "Cisco Meraki MR46",
+    category: "Cisco",
+    type: "Wireless",
+    description: "Wi-Fi 6 cloud-managed access point for high-density environments.",
+    specifications: ["Wi-Fi 6 (802.11ax)", "4x4:4 MU-MIMO", "Cloud management", "Advanced security"],
+    image: "/images/networking.jpg", 
+    price: "Contact for pricing"
+  },
+  {
+    id: 5,
+    name: "Dell Networking N3248TE-ON",
+    category: "Dell",
+    type: "Networking",
+    description: "48-port 1GbE Top of Rack switch with 10GbE uplinks.",
+    specifications: ["48 x 1GbE ports", "4 x 10GbE SFP+", "Open Networking", "ONIE support"],
+    image: "/images/security.jpg", 
+    price: "Contact for pricing"
+  },
+  {
+    id: 6,
+    name: "HP Aruba 6300M Series",
+    category: "HP",
+    type: "Networking",
+    description: "Modular campus core and aggregation switch with advanced features.",
+    specifications: ["Modular design", "Up to 576 ports", "VSF stacking", "AOS-CX operating system"],
+    image: "/images/networking.jpg", 
+    price: "Contact for pricing"
+  }
   ];
 
   return (
@@ -512,14 +512,14 @@ function ProductsPage() {
   const categories = ['All', 'Cisco', 'Dell', 'HP', 'Networking', 'Servers', 'Wireless'];
 
   const products = [
-    {
+{
       id: 1,
       name: "Cisco Catalyst 9300 Series",
       category: "Cisco",
       type: "Networking",
       description: "Enterprise-class stackable access switches with advanced security and management features.",
       specifications: ["48 x 1G ports", "4 x 10G uplinks", "StackWise-480 technology", "DNA ready"],
-      image: "/assets/images/networking.jpg",
+      image: "/images/networking.jpg",
       price: "Contact for pricing"
     },
     {
@@ -529,7 +529,7 @@ function ProductsPage() {
       type: "Servers",
       description: "2U rack server designed for demanding workloads with exceptional performance.",
       specifications: ["Intel Xeon Scalable processors", "Up to 4TB memory", "NVMe SSD support", "iDRAC9 management"],
-      image: "/assets/images/security.jpg",
+      image: "/images/security.jpg",
       price: "Contact for pricing"
     },
     {
@@ -539,7 +539,7 @@ function ProductsPage() {
       type: "Servers",
       description: "Industry-standard 2U rack server for diverse workloads and environments.",
       specifications: ["Intel Xeon processors", "Up to 3TB memory", "12Gb/s SAS", "iLO5 management"],
-      image: "/assets/images/hero_background.jpg",
+      image: "/images/hero_background.jpg",
       price: "Contact for pricing"
     },
     {
@@ -549,7 +549,7 @@ function ProductsPage() {
       type: "Wireless",
       description: "Wi-Fi 6 cloud-managed access point for high-density environments.",
       specifications: ["Wi-Fi 6 (802.11ax)", "4x4:4 MU-MIMO", "Cloud management", "Advanced security"],
-      image: "/assets/images/networking.jpg",
+      image: "/images/networking.jpg",
       price: "Contact for pricing"
     },
     {
@@ -559,7 +559,7 @@ function ProductsPage() {
       type: "Networking",
       description: "48-port 1GbE Top of Rack switch with 10GbE uplinks.",
       specifications: ["48 x 1GbE ports", "4 x 10GbE SFP+", "Open Networking", "ONIE support"],
-      image: "/assets/images/security.jpg",
+      image: "/images/security.jpg",
       price: "Contact for pricing"
     },
     {
@@ -569,7 +569,7 @@ function ProductsPage() {
       type: "Networking",
       description: "Modular campus core and aggregation switch with advanced features.",
       specifications: ["Modular design", "Up to 576 ports", "VSF stacking", "AOS-CX operating system"],
-      image: "/assets/images/networking.jpg",
+      image: "/images/networking.jpg",
       price: "Contact for pricing"
     }
   ];
