@@ -512,7 +512,6 @@ function ProductsPage() {
   const categories = ['All', 'Cisco', 'Dell', 'HP', 'Networking', 'Servers', 'Wireless'];
 
   const products = [
-    const products = [
     {
       id: 1,
       name: "Cisco Catalyst 9300 Series",
